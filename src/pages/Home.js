@@ -56,6 +56,7 @@ const Home = () => {
   const [halfwayTimer, setHalfwayTimer] = useState(null);
   const prevCompletedCount = useRef(completedTimers.length);
   const prevTimersRef = useRef([]);
+  const [categoryFilter, setCategoryFilter] = useState('All');
 
   // Detect when a timer is completed
   useEffect(() => {
@@ -109,6 +110,7 @@ const Home = () => {
   };
 
   const categories = [...new Set(timers.map((timer) => timer.category))];
+  const filteredCategories = categoryFilter === 'All' ? categories : [categoryFilter];
 
   // Bulk action handlers
   const handleStartAll = (category) => {
@@ -143,7 +145,24 @@ const Home = () => {
           </Box>
         </Box>
 
-        {categories.map((category) => (
+        {/* Category Filter Dropdown */}
+        <Box sx={{ mb: 3, maxWidth: 250 }}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Filter by Category</InputLabel>
+            <Select
+              value={categoryFilter}
+              label="Filter by Category"
+              onChange={e => setCategoryFilter(e.target.value)}
+            >
+              <MenuItem value="All">All</MenuItem>
+              {categories.map((cat) => (
+                <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
+
+        {filteredCategories.map((category) => (
           <Accordion key={category}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
