@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Container,
   Typography,
@@ -35,6 +35,7 @@ const Home = () => {
   const navigate = useNavigate();
   const {
     timers,
+    completedTimers,
     addTimer,
     deleteTimer,
     startTimer,
@@ -47,6 +48,19 @@ const Home = () => {
     duration: '',
     category: '',
   });
+  const [congratsOpen, setCongratsOpen] = useState(false);
+  const [lastCompleted, setLastCompleted] = useState(null);
+  const prevCompletedCount = useRef(completedTimers.length);
+
+  // Detect when a timer is completed
+  useEffect(() => {
+    if (completedTimers.length > prevCompletedCount.current) {
+      const latest = completedTimers[completedTimers.length - 1];
+      setLastCompleted(latest);
+      setCongratsOpen(true);
+    }
+    prevCompletedCount.current = completedTimers.length;
+  }, [completedTimers]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -166,6 +180,21 @@ const Home = () => {
             </AccordionDetails>
           </Accordion>
         ))}
+
+        {/* Congratulatory Modal */}
+        <Dialog open={congratsOpen} onClose={() => setCongratsOpen(false)}>
+          <DialogTitle>Congratulations!</DialogTitle>
+          <DialogContent>
+            <Typography variant="h6">
+              {lastCompleted ? `You completed the timer: "${lastCompleted.name}"!` : ''}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCongratsOpen(false)} autoFocus>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add New Timer</DialogTitle>
