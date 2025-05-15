@@ -134,7 +134,12 @@ const Home = () => {
                     <LinearProgress
                       variant="determinate"
                       value={(timer.remainingTime / timer.duration) * 100}
-                      sx={{ height: 10, borderRadius: 5 }}
+                      ssx={{
+                        height: 10,
+                        borderRadius: 5,
+                        '& .MuiLinearProgress-bar': {
+                          transition: 'width 1s linear', // Smooth transition for the bar width
+                        }, }}
                     />
                   </Box>
                 ))}
