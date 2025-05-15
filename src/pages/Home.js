@@ -18,6 +18,7 @@ import {
   AccordionDetails,
   IconButton,
   LinearProgress,
+  Stack,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -70,6 +71,17 @@ const Home = () => {
 
   const categories = [...new Set(timers.map((timer) => timer.category))];
 
+  // Bulk action handlers
+  const handleStartAll = (category) => {
+    timers.filter((timer) => timer.category === category).forEach((timer) => startTimer(timer));
+  };
+  const handlePauseAll = (category) => {
+    timers.filter((timer) => timer.category === category).forEach((timer) => pauseTimer(timer));
+  };
+  const handleResetAll = (category) => {
+    timers.filter((timer) => timer.category === category).forEach((timer) => resetTimer(timer));
+  };
+
   return (
     <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
@@ -95,7 +107,20 @@ const Home = () => {
         {categories.map((category) => (
           <Accordion key={category}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography>{category}</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
+                <Typography>{category}</Typography>
+                <Stack direction="row" spacing={1} onClick={e => e.stopPropagation()}>
+                  <Button size="small" variant="outlined" startIcon={<PlayArrowIcon />} onClick={() => handleStartAll(category)}>
+                    Start All
+                  </Button>
+                  <Button size="small" variant="outlined" startIcon={<PauseIcon />} onClick={() => handlePauseAll(category)}>
+                    Pause All
+                  </Button>
+                  <Button size="small" variant="outlined" startIcon={<RefreshIcon />} onClick={() => handleResetAll(category)}>
+                    Reset All
+                  </Button>
+                </Stack>
+              </Box>
             </AccordionSummary>
             <AccordionDetails>
               {timers
@@ -134,12 +159,7 @@ const Home = () => {
                     <LinearProgress
                       variant="determinate"
                       value={(timer.remainingTime / timer.duration) * 100}
-                      sx={{
-                        height: 10,
-                        borderRadius: 5,
-                        '& .MuiLinearProgress-bar': {
-                          transition: 'width 1s linear', // Smooth transition for the bar width
-                        }, }}
+                      sx={{ height: 10, borderRadius: 5, '& .MuiLinearProgress-bar': { transition: 'width 1s linear' } }}
                     />
                   </Box>
                 ))}
