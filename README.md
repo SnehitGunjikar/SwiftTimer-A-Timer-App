@@ -1,6 +1,6 @@
 # Timer Manager
 
-A React.js application for managing multiple customizable timers with categories, progress visualization, and history tracking.
+A React.js application for managing multiple customizable timers with categories, progress visualization, history tracking, and advanced features.
 
 ## Features
 
@@ -8,6 +8,11 @@ A React.js application for managing multiple customizable timers with categories
 - Categorize timers (Workout, Study, Break, Other)
 - Visual progress tracking with progress bars
 - Timer controls (Start, Pause, Reset)
+- **Bulk actions**: Start, Pause, or Reset all timers in a category
+- **User feedback**: Modal notifications when a timer completes or reaches halfway (if enabled)
+- **Halfway alert**: Optional halfway alert for each timer
+- **Category filtering**: Filter timers by category
+- **Theme switcher**: Toggle between light and dark mode
 - Group timers by categories
 - History tracking of completed timers
 - Local storage persistence
@@ -38,15 +43,25 @@ npm start
 
 The application will open in your default browser at `http://localhost:3000`.
 
+## Usage Notes
+
+- **Add Timer**: Click "Add Timer" and fill in the details. Optionally enable the halfway alert.
+- **Bulk Actions**: Use the Start All, Pause All, or Reset All buttons at the top of each category accordion.
+- **Halfway Alert**: If enabled, a modal will notify you when the timer reaches 50% of its duration.
+- **Completion Modal**: When a timer completes, a congratulatory modal will appear.
+- **Theme Switcher**: Use the sun/moon icon at the top-right to toggle between light and dark mode.
+- **Category Filter**: Use the dropdown above the timer list to filter timers by category.
+- **History**: Click "View History" to see a log of all completed timers, including name, category, duration, and completion time.
+
 ## Project Structure
 
 ```
 src/
   ├── components/     # Reusable components
-  ├── context/       # Context providers
-  ├── pages/         # Page components
-  ├── App.js         # Main application component
-  └── index.js       # Application entry point
+  ├── context/        # Context providers
+  ├── pages/          # Page components
+  ├── App.js          # Main application component
+  └── index.js        # Application entry point
 ```
 
 ## Assumptions and Design Decisions
@@ -65,9 +80,7 @@ src/
 2. Implement custom categories
 3. Add timer templates
 4. Implement timer statistics and analytics
-5. Add dark mode support
-6. Implement timer sharing functionality
-7. Add export/import functionality for timer configurations
+5. Add export/import functionality for timer configurations
 
 ## Contributing
 

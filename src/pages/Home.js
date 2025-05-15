@@ -278,9 +278,11 @@ const Home = () => {
                 required
               />
               <FormControl fullWidth margin="dense">
-                <InputLabel>Category</InputLabel>
-                <Select
+                <InputLabel id="timer-category-label">Category</InputLabel>
+                <Select labelId="timer-category-label"
+                  id="timerCategory"
                   value={newTimer.category}
+                  label="Category"
                   onChange={(e) => setNewTimer({ ...newTimer, category: e.target.value })}
                   required
                 >
