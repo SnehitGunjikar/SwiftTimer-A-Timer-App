@@ -37,6 +37,7 @@ const Home = () => {
     timers,
     completedTimers,
     addTimer,
+    updateTimer,
     deleteTimer,
     startTimer,
     pauseTimer,
@@ -47,10 +48,14 @@ const Home = () => {
     name: '',
     duration: '',
     category: '',
+    halfwayAlert: false,
   });
   const [congratsOpen, setCongratsOpen] = useState(false);
   const [lastCompleted, setLastCompleted] = useState(null);
+  const [halfwayOpen, setHalfwayOpen] = useState(false);
+  const [halfwayTimer, setHalfwayTimer] = useState(null);
   const prevCompletedCount = useRef(completedTimers.length);
+  const prevTimersRef = useRef([]);
 
   // Detect when a timer is completed
   useEffect(() => {
@@ -62,6 +67,25 @@ const Home = () => {
     prevCompletedCount.current = completedTimers.length;
   }, [completedTimers]);
 
+  // Detect halfway alert
+  useEffect(() => {
+    timers.forEach((timer) => {
+      if (
+        timer.halfwayAlert &&
+        !timer.halfwayAlertTriggered &&
+        timer.remainingTime <= timer.duration / 2 &&
+        timer.remainingTime > 0
+      ) {
+        // Show halfway alert
+        setHalfwayTimer(timer);
+        setHalfwayOpen(true);
+        // Mark as triggered
+        updateTimer({ ...timer, halfwayAlertTriggered: true });
+      }
+    });
+    prevTimersRef.current = timers;
+  }, [timers, updateTimer]);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -72,8 +96,9 @@ const Home = () => {
       duration: parseInt(newTimer.duration),
       remainingTime: parseInt(newTimer.duration),
       status: 'idle',
+      halfwayAlertTriggered: false,
     });
-    setNewTimer({ name: '', duration: '', category: '' });
+    setNewTimer({ name: '', duration: '', category: '', halfwayAlert: false });
     handleClose();
   };
 
@@ -181,6 +206,21 @@ const Home = () => {
           </Accordion>
         ))}
 
+        {/* Halfway Alert Modal */}
+        <Dialog open={halfwayOpen} onClose={() => setHalfwayOpen(false)}>
+          <DialogTitle>Halfway There!</DialogTitle>
+          <DialogContent>
+            <Typography variant="h6">
+              {halfwayTimer ? `You are halfway through the timer: "${halfwayTimer.name}"!` : ''}
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setHalfwayOpen(false)} autoFocus>
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         {/* Congratulatory Modal */}
         <Dialog open={congratsOpen} onClose={() => setCongratsOpen(false)}>
           <DialogTitle>Congratulations!</DialogTitle>
@@ -231,6 +271,16 @@ const Home = () => {
                   <MenuItem value="Other">Other</MenuItem>
                 </Select>
               </FormControl>
+              <Box sx={{ mt: 2 }}>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={newTimer.halfwayAlert}
+                    onChange={e => setNewTimer({ ...newTimer, halfwayAlert: e.target.checked })}
+                  />
+                  {' '}Enable halfway alert
+                </label>
+              </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>
